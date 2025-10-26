@@ -1,16 +1,36 @@
 ---
+import Base from "../layouts/Base.astro";
+import { getCollection } from 'astro:content';
 
+// Get all blog posts and sort by date (newest first)
+const posts = (await getCollection('posts')).sort(
+  (a: any, b: any) => b.data.date.valueOf() - a.data.date.valueOf()
+);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base>
+  <Fragment slot="title">Cody Tanksley</Fragment>
+
+  <section class="intro">
+    <h1>Hey, I'm Cody</h1>
+    <p>Software engineer at Goldman Sachs. I write about code, photography, aquariums, and whatever else catches my interest.</p>
+  </section>
+
+  <section class="posts">
+    <h2>Writing</h2>
+    {posts.map((post: any) => (
+      <article class="post-preview">
+        <time datetime={post.data.date}>
+          {new Date(post.data.date).toLocaleDateString('en-US', {
+            timeZone: 'UTC', // Date constructor formats datetime strings without timezone in UTC according to ISO-8601
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </time>
+        <h3><a href={`/posts/${post.slug}`}>{post.data.title}</a></h3>
+        <p>{post.data.excerpt}</p>
+      </article>
+    ))}
+  </section>
+</Base>

@@ -1,0 +1,16 @@
+---
+interface Props {
+  /** id of the target Eq, e.g. id="gaussian" */
+  id: string;
+  /** Accessible label prefix (default: "Equation") */
+  label?: string;
+  class?: string;
+}
+const { id, label = 'Equation', class: className } = Astro.props;
+---
+<a
+  href={`#${id}`}
+  class={`eqref ${className ?? ''}`.trim()}
+  data-eq-ref={id}
+  aria-label={`${label} reference`}
+>(?)</a>

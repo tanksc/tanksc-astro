@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{Astro.slots.has('title') ? Astro.slots.render('title') : 'Cody Tanksley'}</title>
+    <meta
+      name="description"
+      content="Software engineer, photographer, and writer from Albany, NY"
+    />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      // Apply saved theme *before* CSS loads to avoid flash
+      (function(){
+        try {
+          var m = localStorage.getItem('theme-preference');
+          if (m === 'light' || m === 'dark') {
+            document.documentElement.setAttribute('data-theme', m);
+          } else {
+            document.documentElement.removeAttribute('data-theme');
+          }
+        } catch (e) {
+          // ignore
+        }
+      })();
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <a href="/" class="site-title">Cody Tanksley</a>
+        <div class="nav-links">
+          <a href="/" class="home-link">Home</a>
+          <a href="/about">About</a>
+          <button
+            id="theme-toggle"
+            class="theme-toggle"
+            type="button"
+            aria-label="Toggle theme"
+          >
+            🖥️ Auto
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Cody Tanksley</p>
+    </footer>
+
+    <script type="module">
+      import { initThemeToggle } from "/src/scripts/theme-toggle.ts";
+      initThemeToggle();
+    </script>
+    <script type="module">
+      import { initEquations } from "/src/scripts/equations.ts";
+      initEquations();
+    </script>
+  </body>
+</html>

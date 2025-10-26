@@ -1,0 +1,12 @@
+---
+interface Props {
+  /** Unique id for linking, e.g. id="gaussian" */
+  id?: string;
+  class?: string;
+}
+const { id, class: className } = Astro.props;
+---
+<div class={`eq ${className ?? ''}`.trim()} id={id}>
+  <slot />
+  <span class="eqno" aria-hidden="true"></span>
+</div>
