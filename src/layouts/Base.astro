@@ -1,7 +1,4 @@
 ---
-import themeToggleURL from "../scripts/theme-toggle.ts?url";
-import equationsURL   from "../scripts/equations.ts?url";
----
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -63,7 +60,9 @@ import equationsURL   from "../scripts/equations.ts?url";
     <footer>
       <p>&copy; 2025 Cody Tanksley</p>
     </footer>
-    <script type="module" src={themeToggleURL}></script>
-    <script type="module" src={equationsURL}></script>
+    <script>
+      import "../scripts/theme-toggle.ts";
+      import "../scripts/equations.ts";
+    </script>
   </body>
 </html>
