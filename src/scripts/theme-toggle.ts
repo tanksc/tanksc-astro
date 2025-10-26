@@ -1,57 +1,54 @@
-type ThemeMode = "light" | "dark" | "auto";
+type ThemeMode = "light" | "dark";
 
-const KEY = "theme-preference";
+const KEY = "theme-mode";
 const root = document.documentElement;
 const btn = document.getElementById("theme-toggle") as HTMLButtonElement | null;
+const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
 
-function applyTheme(mode: ThemeMode): void {
-  if (mode === "light" || mode === "dark") {
-    root.setAttribute("data-theme", mode);
-  } else {
-    root.removeAttribute("data-theme");
-  }
+function setTheme(mode: ThemeMode): void {
+  root.setAttribute("data-theme", mode);
   updateLabel(mode);
+  try {
+    sessionStorage.setItem(KEY, mode);
+  } catch (_err) {
+    // ignore when storage is unavailable
+  }
 }
 
-function updateLabel(mode: ThemeMode): void {
+function updateLabel(currentMode: ThemeMode): void {
   if (!btn) return;
+  const targetMode = currentMode === "dark" ? "light" : "dark";
   const labels: Record<ThemeMode, string> = {
-    dark: "🌙 Dark",
-    light: "☀️ Light",
-    auto: "🖥️ Auto",
+    dark: "🌙 Switch to dark mode",
+    light: "☀️ Switch to light mode",
   };
-  btn.textContent = labels[mode];
-  btn.dataset.mode = mode;
-  btn.setAttribute("aria-pressed", mode !== "auto" ? "true" : "false");
+  btn.textContent = labels[targetMode];
+  btn.setAttribute("aria-label", labels[targetMode]);
+  btn.dataset.mode = targetMode;
 }
 
-function getStored(): ThemeMode {
-  const value = localStorage.getItem(KEY);
-  if (value === "light" || value === "dark" || value === "auto") return value;
-  return "auto";
+function readStored(): ThemeMode | null {
+  try {
+    const value = sessionStorage.getItem(KEY);
+    if (value === "light" || value === "dark") return value;
+  } catch (_err) {
+    // ignore
+  }
+  return null;
 }
 
-function setStored(mode: ThemeMode): void {
-  localStorage.setItem(KEY, mode);
-}
-
-function next(mode: ThemeMode): ThemeMode {
-  if (mode === "auto") return "dark";
-  if (mode === "dark") return "light";
-  return "auto";
+function initialMode(): ThemeMode {
+  return readStored() ?? (prefersDark.matches ? "dark" : "light");
 }
 
 export function initThemeToggle(): void {
-  const current = getStored();
-  applyTheme(current);
+  let currentMode: ThemeMode = initialMode();
+  setTheme(currentMode);
 
-  if (btn) {
-    btn.addEventListener("click", () => {
-      const nextMode = next(getStored());
-      setStored(nextMode);
-      applyTheme(nextMode);
-    });
-  }
+  btn?.addEventListener("click", () => {
+    currentMode = currentMode === "dark" ? "light" : "dark";
+    setTheme(currentMode);
+  });
 }
 
 initThemeToggle();
