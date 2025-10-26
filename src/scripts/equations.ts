@@ -1,9 +1,9 @@
 /** Fill EqRef link text with the correct numbers per-article. */
 export function initEquations(): void {
-  const articles = Array.from(document.querySelectorAll('article')) as HTMLElement[];
+  const articles = Array.from(document.querySelectorAll("article")) as HTMLElement[];
 
   articles.forEach((article) => {
-    const eqs = Array.from(article.querySelectorAll('.eq')) as HTMLElement[];
+    const eqs = Array.from(article.querySelectorAll(".eq")) as HTMLElement[];
     const map = new Map<string, number>();
 
     eqs.forEach((eq, i) => {
