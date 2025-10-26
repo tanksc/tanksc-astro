@@ -1,3 +1,7 @@
+---
+import themeToggleScript from "../scripts/theme-toggle.ts?url";
+import equationsScript from "../scripts/equations.ts?url";
+---
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -58,13 +62,7 @@
       <p>&copy; 2025 Cody Tanksley</p>
     </footer>
 
-    <script type="module">
-      import { initThemeToggle } from "../scripts/theme-toggle.ts";
-      initThemeToggle();
-    </script>
-    <script type="module">
-      import { initEquations } from "../scripts/equations.ts";
-      initEquations();
-    </script>
+    <script type="module" src={themeToggleScript}></script>
+    <script type="module" src={equationsScript}></script>
   </body>
 </html>

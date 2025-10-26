@@ -20,3 +20,5 @@ export function initEquations(): void {
     });
   });
 }
+
+initEquations();
