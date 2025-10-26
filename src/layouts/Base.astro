@@ -1,7 +1,3 @@
----
-import themeToggleURL from "../scripts/theme-toggle.ts?url";
-import equationsURL   from "../scripts/equations.ts?url";
----
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -62,7 +58,13 @@ import equationsURL   from "../scripts/equations.ts?url";
     <footer>
       <p>&copy; 2025 Cody Tanksley</p>
     </footer>
-    <script type="module" src={themeToggleURL}></script>
-    <script type="module" src={equationsURL}></script>
+    <script type="module">
+      import { initThemeToggle } from '/src/scripts/theme-toggle.ts';
+      import { initEquations } from '/src/scripts/equations.ts';
+
+      // Run immediately; these modules don't need DOMContentLoaded because the button exists in layout
+      initThemeToggle();
+      initEquations();
+    </script>
   </body>
 </html>
