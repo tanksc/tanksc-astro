@@ -1,53 +1,60 @@
 type ThemeMode = "light" | "dark";
 
-const KEY = "theme-mode";
+const STORAGE_KEY = "theme-mode";
 const root = document.documentElement;
-const btn = document.getElementById("theme-toggle") as HTMLButtonElement | null;
+const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
 
-function setTheme(mode: ThemeMode): void {
-  root.setAttribute("data-theme", mode);
-  updateLabel(mode);
+const LABELS: Record<ThemeMode, string> = {
+  dark: "Switch to dark mode",
+  light: "Switch to light mode",
+};
+
+const opposite = (mode: ThemeMode): ThemeMode => (mode === "dark" ? "light" : "dark");
+
+function persist(mode: ThemeMode): void {
   try {
-    sessionStorage.setItem(KEY, mode);
+    sessionStorage.setItem(STORAGE_KEY, mode);
   } catch (_err) {
-    // ignore when storage is unavailable
+    // storage can fail in private mode; ignore
   }
 }
 
-function updateLabel(currentMode: ThemeMode): void {
-  if (!btn) return;
-  const targetMode = currentMode === "dark" ? "light" : "dark";
-  const labels: Record<ThemeMode, string> = {
-    dark: "🌙 Switch to dark mode",
-    light: "☀️ Switch to light mode",
-  };
-  btn.textContent = labels[targetMode];
-  btn.setAttribute("aria-label", labels[targetMode]);
-  btn.dataset.mode = targetMode;
+function updateToggle(nextMode: ThemeMode): void {
+  if (!toggle) return;
+  const label = LABELS[nextMode];
+  toggle.dataset.mode = nextMode;
+  toggle.setAttribute("aria-label", label);
+  toggle.setAttribute("title", label);
+}
+
+function setTheme(mode: ThemeMode): void {
+  root.setAttribute("data-theme", mode);
+  persist(mode);
+  updateToggle(opposite(mode));
 }
 
 function readStored(): ThemeMode | null {
   try {
-    const value = sessionStorage.getItem(KEY);
-    if (value === "light" || value === "dark") return value;
+    const stored = sessionStorage.getItem(STORAGE_KEY);
+    if (stored === "light" || stored === "dark") return stored;
   } catch (_err) {
-    // ignore
+    // ignore storage access errors
   }
   return null;
 }
 
-function initialMode(): ThemeMode {
+function getInitialMode(): ThemeMode {
   return readStored() ?? (prefersDark.matches ? "dark" : "light");
 }
 
 export function initThemeToggle(): void {
-  let currentMode: ThemeMode = initialMode();
-  setTheme(currentMode);
+  const initialMode = getInitialMode();
+  setTheme(initialMode);
 
-  btn?.addEventListener("click", () => {
-    currentMode = currentMode === "dark" ? "light" : "dark";
-    setTheme(currentMode);
+  toggle?.addEventListener("click", () => {
+    const target = toggle.dataset.mode === "dark" ? "dark" : "light";
+    setTheme(target);
   });
 }
 

@@ -12,5 +12,6 @@ export default defineConfig({
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex],
     })
-  ]
+  ],
+  server: { host: true, port: 4321 },
 });
