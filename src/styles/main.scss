@@ -102,18 +102,21 @@ h6 {
 }
 
 h1 {
-  font-size: 2.25rem;
+  font-size: 1.618rem;
+  font-weight: 700;
   margin-bottom: var(--spacing-lg);
 }
 
 h2 {
-  font-size: 1.75rem;
-  margin-top: var(--spacing-xl);
+  font-size: 1.309rem;
+  font-weight: 600;
   margin-bottom: var(--spacing-md);
 }
 
 h3 {
-  font-size: 1.25rem;
+  font-size: 1.155rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
 }
 
 p {
@@ -162,9 +165,8 @@ header {
 footer {
   margin-top: var(--spacing-xl);
   padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--color-border);
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-family: var(--font-mono);
 }
 
@@ -174,7 +176,6 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding-bottom: var(--spacing-md);
-  border-bottom: 1px solid var(--color-border);
 
   .site-title {
     font-size: 1.25rem;
@@ -257,7 +258,7 @@ nav {
 
   time {
     display: block;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
     margin-bottom: var(--spacing-sm);
   }
@@ -296,7 +297,7 @@ article {
 
   time {
     display: block;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
   }
 }
@@ -348,23 +349,23 @@ figcaption { color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.5r
 
 /* Theme overrides */
 [data-theme="light"] {
-  --color-bg: #FFFBF7;
-  --color-text: #222222;
-  --color-text-muted: #555555;
-  --color-link: #C17900;
-  --color-link-hover: #E89A17;
-  --color-border: #E7E2DB;
-  --color-code-bg: #F7F2EC;
+  --color-bg: #fdfcf9;           /* soft paper white — not pure white */
+  --color-text: #2a2a2a;         /* rich charcoal, easy on the eyes */
+  --color-text-muted: #68635c;   /* warm medium gray for secondary text */
+  --color-link: #c08000;         /* warm golden accent (matches dark mode hue) */
+  --color-link-hover: #e5a317;   /* gentle hover lift */
+  --color-border: #e5e2da;       /* faint warm border */
+  --color-code-bg: #f8f6f1;      /* subtle cream tint for code blocks */
 }
 
 [data-theme="dark"] {
-  --color-bg: #121212;
-  --color-text: #F1EDEA;
-  --color-text-muted: #A8A29E;
-  --color-link: #E6B450;
-  --color-link-hover: #F6C860;
-  --color-border: #1E1E1E;
-  --color-code-bg: #1A1A1A;
+  --color-bg: #242526;          /* cooler charcoal */
+  --color-text: #E6E8EB;        /* cool off-white */
+  --color-text-muted: #A7ADB4;  /* neutral-cool muted gray */
+  --color-link: #C9B15E;        /* slightly cooled gold */
+  --color-link-hover: #D8BF6A;  /* gentle hover */
+  --color-border: #3A3C3F;      /* cooler neutral border */
+  --color-code-bg: #2C2E31;     /* cooler code block bg */
 }
 
 /* KaTeX overrides */
@@ -378,8 +379,12 @@ figcaption { color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.5r
   margin: 1.5rem 0;
   text-align: center;
   line-height: 1.4;
-  overflow-x: auto;
+  overflow-x: visible;
 }
+
+/* Make KaTeX blocks less likely to overflow without showing scrollbars */
+.katex-display > .katex { max-width: 100%; }
+.katex { white-space: normal; }
 
 /* Equation numbering */
 .eq {
@@ -434,9 +439,14 @@ figcaption { color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.5r
     padding: var(--spacing-md);
   }
 
+  p {
+    font-size: 1.125rem;
+  }
+
   nav {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     gap: var(--spacing-md);
 
     .nav-links {

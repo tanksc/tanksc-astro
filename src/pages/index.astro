@@ -11,11 +11,6 @@ const posts = (await getCollection('posts')).sort(
 <Base>
   <Fragment slot="title">Cody Tanksley</Fragment>
 
-  <section class="intro">
-    <h1>Hey, I'm Cody</h1>
-    <p>Software engineer at Goldman Sachs. I write about code, photography, aquariums, and whatever else catches my interest.</p>
-  </section>
-
   <section class="posts">
     <h2>Writing</h2>
     {posts.map((post: any) => (
