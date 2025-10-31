@@ -9,7 +9,7 @@ const siteUrl = Astro.site ? Astro.site.toString() : undefined;
 const pageUrl = new URL(Astro.request.url).toString();
 
 // Accept either `cover` or `ogImage` from posts; fall back to a default image
-const ogImageSrc = p.ogImage ?? p.cover ?? "/og-default.jpg";
+const ogImageSrc = p.ogImage ?? p.cover ?? "/og/og-default.jpg";
 const ogImage = (siteUrl && ogImageSrc) ? new URL(ogImageSrc, siteUrl).toString() : ogImageSrc;
 const ogImageAlt = p.ogImageAlt ?? p.title ?? "Site preview";
 
