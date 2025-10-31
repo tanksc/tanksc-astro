@@ -1,16 +1,69 @@
 ---
 import "../styles/main.scss";
+
+// Minimal-upkeep SEO defaults pulled from page frontmatter when available
+const p = Astro.props ?? {};
+const metaTitle = p.title ?? "Cody Tanksley";
+const metaDescription = p.description ?? p.excerpt ?? "Software engineer, photographer, and writer from Albany, NY";
+const siteUrl = Astro.site ? Astro.site.toString() : undefined;
+const pageUrl = new URL(Astro.request.url).toString();
+
+// Accept either `cover` or `ogImage` from posts; fall back to a default image
+const ogImageSrc = p.ogImage ?? p.cover ?? "/og-default.jpg";
+const ogImage = (siteUrl && ogImageSrc) ? new URL(ogImageSrc, siteUrl).toString() : ogImageSrc;
+const ogImageAlt = p.ogImageAlt ?? p.title ?? "Site preview";
+
+// Heuristic: treat as a BlogPosting if there's a date-like field
+const isPost = Boolean(p.date || p.pubDate);
+const datePublished = p.pubDate ?? p.date;
+const dateModified = p.updatedDate ?? datePublished;
+
+const ld = isPost
+  ? {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: metaTitle,
+      description: metaDescription,
+      url: pageUrl,
+      datePublished,
+      dateModified,
+      author: [{ "@type": "Person", name: "Cody Tanksley" }],
+      image: ogImage ? [ogImage] : undefined,
+      mainEntityOfPage: pageUrl,
+    }
+  : {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Cody Tanksley",
+      url: siteUrl ?? pageUrl,
+      description: metaDescription,
+    };
 ---
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{Astro.slots.has('title') ? Astro.slots.render('title') : 'Cody Tanksley'}</title>
-    <meta
-      name="description"
-      content="Software engineer, photographer, and writer from Albany, NY"
-    />
+    <title>{metaTitle}</title>
+    <meta name="description" content={metaDescription} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={pageUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={isPost ? "article" : "website"} />
+    <meta property="og:site_name" content="Cody Tanksley" />
+    <meta property="og:title" content={metaTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={pageUrl} />
+    {ogImage && (<meta property="og:image" content={ogImage} />)}
+    {ogImageAlt && (<meta property="og:image:alt" content={ogImageAlt} />)}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={metaTitle} />
+    <meta name="twitter:description" content={metaDescription} />
+    {ogImage && (<meta name="twitter:image" content={ogImage} />)}
     <meta name="color-scheme" content="light dark" />
     <script>
       // Apply session theme or fallback to system preference before CSS loads
@@ -42,6 +95,7 @@ import "../styles/main.scss";
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
     />
+    <script type="application/ld+json">{JSON.stringify(ld)}</script>
   </head>
 
   <body>
@@ -106,7 +160,8 @@ import "../styles/main.scss";
     </main>
 
     <footer>
-      <p>Cody Tanksley</p>
+      <span>Cody Tanksley</span>
+      <a href="https://github.com/tanksc/tanksc-astro" target="_blank" rel="noopener noreferrer">Source</a>
     </footer>
     <script>
       import "../scripts/theme-toggle.ts";

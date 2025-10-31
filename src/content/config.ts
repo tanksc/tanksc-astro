@@ -6,6 +6,7 @@ const posts = defineCollection({
     title: z.string(),
     date: z.string(),
     excerpt: z.string(),
+    cover: z.string().optional(),
   }),
 });
 

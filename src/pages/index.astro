@@ -4,28 +4,45 @@ import { getCollection } from 'astro:content';
 
 // Get all blog posts and sort by date (newest first)
 const posts = (await getCollection('posts')).sort(
-  (a: any, b: any) => b.data.date.valueOf() - a.data.date.valueOf()
+  (a: any, b: any) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
+
+type PostEntry = (typeof posts)[number];
+
+const grouped = posts.reduce<Map<number, PostEntry[]>>((map, post) => {
+  const year = new Date(post.data.date).getUTCFullYear();
+  const items = map.get(year) ?? [];
+  items.push(post);
+  map.set(year, items);
+  return map;
+}, new Map());
+
+const postsByYear = Array.from(grouped.entries())
+  .sort((a, b) => b[0] - a[0])
+  .map(([year, entries]) => ({ year, entries }));
+
+const seo = {
+  title: "Home — Cody Tanksley",
+  description: "Writing, projects, photos, and notes from Cody Tanksley.",
+};
 ---
 
-<Base>
-  <Fragment slot="title">Cody Tanksley</Fragment>
-
+<Base {...seo}>
   <section class="posts">
-    <h2>Writing</h2>
-    {posts.map((post: any) => (
-      <article class="post-preview">
-        <time datetime={post.data.date}>
-          {new Date(post.data.date).toLocaleDateString('en-US', {
-            timeZone: 'UTC', // Date constructor formats datetime strings without timezone in UTC according to ISO-8601
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </time>
-        <h3><a href={`/posts/${post.slug}`}>{post.data.title}</a></h3>
-        <p>{post.data.excerpt}</p>
-      </article>
-    ))}
+    <h1>Writing</h1>
+    <div class="posts-timeline">
+      {postsByYear.map(({ year, entries }) => (
+        <div class="posts-group">
+          <div class="posts-group-year">{year}</div>
+          <ul class="posts-group-list">
+            {entries.map((post) => (
+              <li class="posts-group-item">
+                <a href={`/posts/${post.slug}`}>{post.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
   </section>
 </Base>

@@ -6,23 +6,24 @@
 /* Root variables */
 :root {
   color-scheme: light dark;
-  --color-bg: #FFFBF7;
-  --color-text: #222222;
-  --color-text-muted: #555555;
-  --color-link: #C17900;
-  --color-link-hover: #E89A17;
-  --color-border: #E7E2DB;
+  /* Light theme colors (canonical) */
+  --color-bg: #fdfcf9;           /* soft paper white — not pure white */
+  --color-text: #2a2a2a;         /* rich charcoal, easy on the eyes */
+  --color-text-muted: #68635c;   /* warm medium gray for secondary text */
+  --color-link: #c08000;         /* warm golden accent (matches dark mode hue) */
+  --color-link-hover: #e5a317;   /* gentle hover lift */
+  --color-border: #e5e2da;       /* faint warm border */
+  --color-code-bg: #f8f6f1;      /* subtle cream tint for code blocks */
 
+  /* Font and layout variables */
   --font-sans: "Geist Sans", -apple-system;
   --font-mono: "Geist Mono", "SF Mono";
 
-  --max-width: 680px;
+  --max-width: 624px;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
   --spacing-xl: 3rem;
-
-  --color-code-bg: #F7F2EC;
 }
 
 /* Dark mode overrides */
@@ -102,19 +103,19 @@ h6 {
 }
 
 h1 {
-  font-size: 1.618rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: var(--spacing-lg);
 }
 
 h2 {
-  font-size: 1.309rem;
+  font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: var(--spacing-md);
 }
 
 h3 {
-  font-size: 1.155rem;
+  font-size: 1.125rem;
   font-weight: 500;
   color: var(--color-text-muted);
 }
@@ -163,11 +164,16 @@ header {
 }
 
 footer {
+  max-width: var(--max-width);
+  margin: 0 auto;
   margin-top: var(--spacing-xl);
   padding-top: var(--spacing-lg);
   color: var(--color-text-muted);
   font-size: 0.75rem;
   font-family: var(--font-mono);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* Navigation */
@@ -238,7 +244,7 @@ nav {
   }
 }
 
-/* Post previews */
+/* Post list */
 .posts {
   margin-top: var(--spacing-lg);
 
@@ -247,39 +253,41 @@ nav {
   }
 }
 
-.post-preview {
-  margin-bottom: var(--spacing-md);
-  padding-bottom: var(--spacing-md);
-  border-bottom: 1px solid var(--color-border);
+.posts-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
 
-  &:last-child {
-    border-bottom: none;
-  }
+.posts-group {
+  display: grid;
+  grid-template-columns: minmax(var(--spacing-lg), var(--spacing-xl)) 1fr;
+  align-items: baseline;
+}
 
-  time {
-    display: block;
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    margin-bottom: var(--spacing-sm);
-  }
+.posts-group-year {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
 
-  h3 {
-    margin-top: 0;
-    margin-bottom: var(--spacing-sm);
-    font-size: 1.25rem;
+.posts-group-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  row-gap: var(--spacing-sm);
+}
 
-    a {
-      color: var(--color-text);
+.posts-group-item a {
+  display: inline;
+  color: var(--color-text);
 
-      &:hover {
-        color: var(--color-link);
-      }
-    }
-  }
-
-  p {
-    color: var(--color-text-muted);
-    margin-bottom: var(--spacing-sm);
+  &:hover {
+    color: var(--color-link);
   }
 }
 
@@ -296,6 +304,7 @@ article {
   }
 
   time {
+    font-family: var(--font-mono);
     display: block;
     font-size: 0.75rem;
     color: var(--color-text-muted);
@@ -347,25 +356,15 @@ canvas {
 figure { margin: var(--spacing-lg) 0; }
 figcaption { color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.5rem; }
 
-/* Theme overrides */
-[data-theme="light"] {
-  --color-bg: #fdfcf9;           /* soft paper white — not pure white */
-  --color-text: #2a2a2a;         /* rich charcoal, easy on the eyes */
-  --color-text-muted: #68635c;   /* warm medium gray for secondary text */
-  --color-link: #c08000;         /* warm golden accent (matches dark mode hue) */
-  --color-link-hover: #e5a317;   /* gentle hover lift */
-  --color-border: #e5e2da;       /* faint warm border */
-  --color-code-bg: #f8f6f1;      /* subtle cream tint for code blocks */
-}
 
 [data-theme="dark"] {
-  --color-bg: #242526;          /* cooler charcoal */
-  --color-text: #E6E8EB;        /* cool off-white */
-  --color-text-muted: #A7ADB4;  /* neutral-cool muted gray */
+  --color-bg: #1f2022;          /* slightly darker charcoal */
+  --color-text: #E7E9EB;        /* cool off-white */
+  --color-text-muted: #A3A9B0;  /* neutral muted gray */
   --color-link: #C9B15E;        /* slightly cooled gold */
   --color-link-hover: #D8BF6A;  /* gentle hover */
-  --color-border: #3A3C3F;      /* cooler neutral border */
-  --color-code-bg: #2C2E31;     /* cooler code block bg */
+  --color-border: #343639;      /* adjusted border */
+  --color-code-bg: #27292C;     /* darker code block bg */
 }
 
 /* KaTeX overrides */
@@ -427,30 +426,4 @@ figcaption { color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.5r
   max-width: var(--max-width);
   margin-inline: auto;
   padding-inline: var(--spacing-md);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  html {
-    font-size: 14px;
-  }
-
-  body {
-    padding: var(--spacing-md);
-  }
-
-  p {
-    font-size: 1.125rem;
-  }
-
-  nav {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--spacing-md);
-
-    .nav-links {
-      gap: var(--spacing-md);
-    }
-  }
 }

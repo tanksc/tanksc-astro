@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import Hero from "../../components/Hero.astro";
 import { getCollection } from 'astro:content';
 
 // Get all posts to generate routes
@@ -13,22 +14,45 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+
+// Date formatting: "Oct 24, 2025 (7d ago)"
+const postDateUtc = new Date(`${post.data.date}T00:00:00Z`);
+const formattedDate = postDateUtc.toLocaleDateString('en-US', {
+  timeZone: 'UTC',
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+// Relative time in d / w / m / y
+const now = new Date();
+const diffMs = now.getTime() - postDateUtc.getTime();
+const days = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+let rel;
+if (days < 7) {
+  rel = `${days}d`;
+} else if (days < 30) {
+  rel = `${Math.floor(days / 7)}w`;
+} else if (days < 365) {
+  rel = `${Math.floor(days / 30)}m`;
+} else {
+  rel = `${Math.floor(days / 365)}y`;
+}
+const displayDate = `${formattedDate} (${rel} ago)`;
 ---
 
-<Base>
-  <Fragment slot="title">{post.data.title} - Cody Tanksley</Fragment>
+<Base
+  title={`${post.data.title} — Cody Tanksley`}
+  description={post.data.excerpt}
+  cover={post.data.cover}
+  date={post.data.date}
+>
 
   <article class="post">
+    {post.data.cover && <Hero image={post.data.cover} title={post.data.title} />}
     <header>
       <h1>{post.data.title}</h1>
-      <time datetime={post.data.date}>
-        {new Date(post.data.date).toLocaleDateString('en-US', {
-          timeZone: 'UTC',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })}
-      </time>
+      <time datetime={post.data.date}>{displayDate}</time>
     </header>
     <Content />
   </article>
