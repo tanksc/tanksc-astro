@@ -12,6 +12,8 @@ const pageUrl = new URL(Astro.request.url).toString();
 const ogImageSrc = p.ogImage ?? p.cover ?? "/og/og-default.jpg";
 const ogImage = (siteUrl && ogImageSrc) ? new URL(ogImageSrc, siteUrl).toString() : ogImageSrc;
 const ogImageAlt = p.ogImageAlt ?? p.title ?? "Site preview";
+const logoSrc = "/apple-touch-icon.png";
+const logoUrl = siteUrl ? new URL(logoSrc, siteUrl).toString() : logoSrc;
 
 // Heuristic: treat as a BlogPosting if there's a date-like field
 const isPost = Boolean(p.date || p.pubDate);
@@ -28,6 +30,28 @@ const toISO = (d: string | Date | undefined): string | undefined => {
 const datePublishedISO = toISO(datePublished);
 const dateModifiedISO = toISO(dateModified) ?? datePublishedISO;
 
+const authorData = {
+  "@type": "Person",
+  name: "Cody Tanksley",
+  url: "https://tanksc.com",
+  sameAs: [
+    "https://github.com/tanksc",
+    "https://www.linkedin.com/in/cody-tanksley/",
+    "https://www.instagram.com/cody.tanksley/",
+  ],
+};
+
+const orgData = {
+  "@type": "Organization",
+  name: "Cody Tanksley",
+  url: siteUrl ?? pageUrl,
+  logo: {
+    "@type": "ImageObject",
+    url: logoUrl,
+  },
+  sameAs: authorData.sameAs,
+};
+
 const ld = isPost
   ? {
       "@context": "https://schema.org",
@@ -37,9 +61,10 @@ const ld = isPost
       url: pageUrl,
       datePublished: datePublishedISO,
       dateModified: dateModifiedISO,
-      author: [{ "@type": "Person", name: "Cody Tanksley" }],
-      ...(ogImage ? { image: [ogImage] } : {}),
+      author: [authorData],
+      publisher: orgData,
       mainEntityOfPage: pageUrl,
+      ...(ogImage ? { image: [ogImage] } : {}),
     }
   : {
       "@context": "https://schema.org",
@@ -47,6 +72,8 @@ const ld = isPost
       name: "Cody Tanksley",
       url: siteUrl ?? pageUrl,
       description: metaDescription,
+      author: authorData,
+      publisher: orgData,
     };
 
 // Pre-stringify and escape to avoid any parser issues (e.g., </script> edge cases)
