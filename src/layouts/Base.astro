@@ -50,7 +50,12 @@ const ld = isPost
     };
 
 // Pre-stringify and escape to avoid any parser issues (e.g., </script> edge cases)
-const ldJson = JSON.stringify(ld).replace(/</g, '\\u003c');
+const ldJson = JSON.stringify(ld)
+  .replace(/</g, '\\u003c')
+  .replace(/>/g, '\\u003e')
+  .replace(/&/g, '\\u0026')
+  .replace(/\u2028/g, '\\u2028')
+  .replace(/\u2029/g, '\\u2029');
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -108,7 +113,13 @@ const ldJson = JSON.stringify(ld).replace(/</g, '\\u003c');
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
     />
-    <script type="application/ld+json">{ldJson}</script>
+    <script type="application/ld+json" is:inline set:html={ldJson}></script>
+
+    <!-- Favicons and PWA Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=1" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=1" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=1" />
+    <link rel="manifest" href="/site.webmanifest?v=1" />
   </head>
 
   <body>
