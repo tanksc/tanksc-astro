@@ -28,14 +28,14 @@
 
 /* Dark mode overrides */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #121212;
-    --color-text: #F1EDEA;
-    --color-text-muted: #A8A29E;
-    --color-link: #E6B450;
-    --color-link-hover: #F6C860;
-    --color-border: #1E1E1E;
-    --color-code-bg: #1A1A1A;
+  :root:not([data-theme]) {
+    --color-bg: #1f2022;          /* match explicit dark */
+    --color-text: #E7E9EB;        /* match explicit dark */
+    --color-text-muted: #A3A9B0;  /* match explicit dark */
+    --color-link: #C9B15E;        /* match explicit dark */
+    --color-link-hover: #D8BF6A;  /* match explicit dark */
+    --color-border: #343639;      /* match explicit dark */
+    --color-code-bg: #27292C;     /* match explicit dark */
   }
 }
 
@@ -426,4 +426,32 @@ figcaption { color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.5r
   max-width: var(--max-width);
   margin-inline: auto;
   padding-inline: var(--spacing-md);
+}
+
+.hero {
+  width: 100%;
+  margin-bottom: var(--spacing-xl);
+}
+
+/* Reserve space for hero media and prevent layout shift */
+.hero-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1200 / 630; /* match OG aspect */
+  background: var(--color-code-bg); /* subtle placeholder tint */
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .hero-media { border-radius: 6px; }
 }

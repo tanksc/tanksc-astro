@@ -47,6 +47,11 @@ const displayDate = `${formattedDate} (${rel} ago)`;
   cover={post.data.cover}
   date={post.data.date}
 >
+  {post.data.cover && (
+    <Fragment slot="head">
+      <link rel="preload" as="image" href={post.data.cover} imagesizes="100vw" fetchpriority="high" />
+    </Fragment>
+  )}
 
   <article class="post">
     {post.data.cover && <Hero image={post.data.cover} title={post.data.title} />}

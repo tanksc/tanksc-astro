@@ -18,6 +18,16 @@ const isPost = Boolean(p.date || p.pubDate);
 const datePublished = p.pubDate ?? p.date;
 const dateModified = p.updatedDate ?? datePublished;
 
+// Normalize dates to ISO 8601 if present
+const toISO = (d: string | Date | undefined): string | undefined => {
+  if (!d) return undefined;
+  if (typeof d === 'string') return new Date(`${d}T00:00:00Z`).toISOString();
+  if (d instanceof Date && !isNaN(d.getTime())) return d.toISOString();
+  try { return new Date(d).toISOString(); } catch { return undefined; }
+};
+const datePublishedISO = toISO(datePublished);
+const dateModifiedISO = toISO(dateModified) ?? datePublishedISO;
+
 const ld = isPost
   ? {
       "@context": "https://schema.org",
@@ -25,10 +35,10 @@ const ld = isPost
       headline: metaTitle,
       description: metaDescription,
       url: pageUrl,
-      datePublished,
-      dateModified,
+      datePublished: datePublishedISO,
+      dateModified: dateModifiedISO,
       author: [{ "@type": "Person", name: "Cody Tanksley" }],
-      image: ogImage ? [ogImage] : undefined,
+      ...(ogImage ? { image: [ogImage] } : {}),
       mainEntityOfPage: pageUrl,
     }
   : {
@@ -38,6 +48,9 @@ const ld = isPost
       url: siteUrl ?? pageUrl,
       description: metaDescription,
     };
+
+// Pre-stringify and escape to avoid any parser issues (e.g., </script> edge cases)
+const ldJson = JSON.stringify(ld).replace(/</g, '\\u003c');
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -95,7 +108,7 @@ const ld = isPost
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
     />
-    <script type="application/ld+json">{JSON.stringify(ld)}</script>
+    <script type="application/ld+json">{ldJson}</script>
   </head>
 
   <body>

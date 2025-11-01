@@ -1,33 +1,19 @@
-
-
 ---
 const { image, title } = Astro.props;
 ---
 
 {image && (
-  <section class="hero">
-    <img src={image} alt={title} loading="lazy" />
+  <section class="hero" aria-label="cover image">
+    <div class="hero-media">
+      <img
+        src={image}
+        alt={title}
+        decoding="async"
+        fetchpriority="high"
+        sizes="100vw"
+        width="1200"
+        height="630"
+      />
+    </div>
   </section>
 )}
-
-<style>
-  .hero {
-    width: 100%;
-    margin-bottom: var(--spacing-xl);
-  }
-
-  .hero img {
-    display: block;
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-
-  @media (max-width: 768px) {
-    .hero img {
-      max-height: 280px;
-      border-radius: 6px;
-    }
-  }
-</style>
